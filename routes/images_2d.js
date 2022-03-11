@@ -3,7 +3,7 @@ const { images_2d } = require("../db");
 const db = require("../db");
 
 router.get("/images_2ds", async(req,res) => {
-    res.status(200).json({data: db.characters})
+    res.status(200).json({data: db.images_2d})
 });
 
 router.get("/:id", async (req, res) => {

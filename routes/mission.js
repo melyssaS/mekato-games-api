@@ -2,7 +2,12 @@ const router = require("express").Router();
 const db = require("../db");
 
 router.get("/", async (req, res) => {
-    res.status(200).json({ data: db.missions })
+    const rawMissions = db.missions;
+    const missions = rawMissions.map(m => ({
+        ...m,
+        objectives: db.mission_objectives.filter(mo => mo.mission === m.id)
+    }))
+    res.status(200).json({ data: missions })
 });
 
 router.get("/:id", async (req, res) => {
@@ -15,7 +20,14 @@ router.get("/:id", async (req, res) => {
         return res.status(404).json({ message: `Mission with id ${id} does not exists` });
     }
 
-    res.status(200).json({ data: mission });
+    const objectives = db.mission_objectives.filter(mo => mo.mission === mission.id)
+
+    res.status(200).json({
+        data: {
+            ...mission,
+            objectives
+        }
+    });
 
 })
 
@@ -58,7 +70,10 @@ router.delete("/:id", async (req, res) => {
     if (isNaN(id)) {
         return res.status(500).json({ message: `Id ${id} should be a number` })
     }
+    //delete missions
     db.missions = db.missions.filter(m => m.id !== id);
+    //delete missions_objectives
+    db.mission_objectives = db.mission_objectives.filter(mo => mo.mission !== id)
     res.status(200).json({ data: `Mission ${id} was deleted` })
 })
 

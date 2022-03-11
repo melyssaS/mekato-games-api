@@ -6,5 +6,7 @@ module.exports = {
     missions: [],
     mission_objectives: [],
     items: [],
-    characters_stats: []
+    characters_stats: [],
+    player_characters:[]
+   
 }
